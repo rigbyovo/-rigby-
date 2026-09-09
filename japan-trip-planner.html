@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>日本行程手帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6F1E4;
+    --paper-deep: #EFE7D3;
+    --ink: #212F3D;
+    --ink-soft: #55677A;
+    --ink-faint: #8B96A3;
+    --seal: #B23A2E;
+    --seal-deep: #8E2C22;
+    --indigo: #2C4356;
+    --indigo-deep: #1B2938;
+    --gold: #B08A3E;
+    --jade: #55725F;
+    --line: #D8CDAF;
+    --line-soft: #E4DBC3;
+    --white: #FFFDF8;
+    --navh: 68px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(33,47,61,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: calc(var(--navh) + 14px + env(safe-area-inset-bottom));
+  }
+
+  h1,h2,h3,.serif{ font-family: 'Noto Serif TC', serif; }
+  button{ font-family: inherit; }
+  ::selection{ background: rgba(178,58,46,0.2); }
+
+  /* ================= HEADER ================= */
+  .cover{
+    background: linear-gradient(155deg, var(--indigo) 0%, var(--indigo-deep) 100%);
+    color: var(--paper);
+    padding: 34px 24px 26px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 3px solid var(--seal-deep);
+  }
+  .cover::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 26px);
+    pointer-events:none;
+  }
+  .cover-inner{
+    max-width: 880px; margin: 0 auto; position: relative;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .cover-titles{ flex:1; min-width:220px; }
+  .cover-eyebrow{
+    font-size: 12px; letter-spacing: 0.18em; color: #C9B98A;
+    margin-bottom: 8px; display:flex; align-items:center; gap:10px;
+  }
+  .cover-eyebrow .rule{ width:26px; height:1px; background:#C9B98A; display:inline-block; }
+  h1.trip-title{
+    font-size: clamp(26px, 5vw, 40px); font-weight: 700; margin: 0 0 8px; line-height: 1.15;
+    outline: none; cursor: text; border-bottom: 1px dashed transparent;
+  }
+  h1.trip-title:hover, h1.trip-title:focus{ border-bottom-color: rgba(246,241,228,0.35); }
+  .trip-dates{
+    font-size: 14.5px; color: #CBD8DD; outline:none; cursor:text;
+    border-bottom: 1px dashed transparent; display:inline-block;
+  }
+  .trip-dates:hover, .trip-dates:focus{ border-bottom-color: rgba(246,241,228,0.3); }
+  .seal-stamp{
+    width: 60px; height: 60px; border: 2.5px solid var(--seal); color: var(--seal);
+    border-radius: 6px; display:flex; align-items:center; justify-content:center;
+    transform: rotate(-8deg); font-family:'Noto Serif TC', serif; font-weight: 900;
+    font-size: 11px; letter-spacing: 0.08em; text-align:center; line-height:1.3;
+    background: rgba(178,58,46,0.06); flex-shrink:0;
+  }
+
+  /* ================= PAGE ================= */
+  .page{
+    max-width: 880px; margin: 0 auto; background: var(--white);
+    border: 1.5px solid var(--line); border-top: none;
+    padding: 28px 28px 44px; min-height: 420px;
+    box-shadow: 0 18px 40px -30px rgba(33,47,61,0.35);
+  }
+  @media (max-width: 620px){
+    .page{ padding: 22px 16px 36px; }
+    .cover{ padding: 26px 16px 20px; }
+  }
+  .page-fade{ animation: pageFade .28s ease; }
+  @keyframes pageFade{
+    from{ opacity:0; transform: translateY(6px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap: 12px;
+    margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line-soft);
+    flex-wrap: wrap;
+  }
+  .section-head h2{ margin:0; font-size: 21px; font-weight:700; }
+  .section-head .hint{ font-size:12.5px; color: var(--ink-faint); }
+
+  .empty-state{
+    padding: 42px 18px; text-align:center; color: var(--ink-faint); font-size: 14px;
+    border: 1px dashed var(--line); border-radius: 10px;
+  }
+  .empty-state strong{ display:block; color: var(--ink-soft); font-family:'Noto Serif TC',serif; font-size:16px; margin-bottom:6px; font-weight:600; }
+
+  .btn{
+    font-size: 13.5px; font-weight: 600; padding: 9px 16px; border-radius: 6px;
+    border: 1.5px solid var(--ink); background: var(--ink); color: var(--white);
+    cursor: pointer; transition: opacity .15s ease, transform .1s ease;
+  }
+  .btn:hover{ opacity:0.85; }
+  .btn:active{ transform: scale(0.97); }
+  .btn.ghost{ background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn.ghost:hover{ border-color: var(--ink-soft); background: var(--paper-deep); }
+  .btn.small{ padding:6px 12px; font-size:12.5px; }
+
+  /* ---- forms ---- */
+  .form-card{ background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-bottom: 26px; }
+  .form-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; }
+  .field{ display:flex; flex-direction:column; gap:5px; }
+  .field label{ font-size:12px; color: var(--ink-soft); font-weight:600; }
+  .field input, .field select, .field textarea{
+    font-family: inherit; font-size: 14px; padding: 9px 10px;
+    border: 1.5px solid var(--line); border-radius: 6px; background: var(--white); color: var(--ink);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline: none; border-color: var(--indigo); }
+  .field.wide{ grid-column: 1 / -1; }
+  .form-actions{ margin-top: 14px; display:flex; gap:10px; justify-content:flex-end; }
+
+  /* ================= BOTTOM NAV (native app feel) ================= */
+  .bottom-nav{
+    position: fixed; left:0; right:0; bottom:0; z-index: 40;
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    display:flex; justify-content:space-around;
+    box-shadow: 0 -8px 24px -16px rgba(33,47,61,0.35);
+  }
+  .nav-btn{
+    flex:1; max-width:120px; background:none; border:none; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding: 6px 4px; border-radius: 12px; color: var(--ink-faint);
+    transition: color .15s ease, transform .1s ease;
+  }
+  .nav-btn:active{ transform: scale(0.92); }
+  .nav-btn svg{ width:22px; height:22px; display:block; }
+  .nav-btn .nav-label{ font-size: 11px; font-weight:600; }
+  .nav-btn.active{ color: var(--seal); }
+  .nav-btn.active .nav-dot{
+    width:4px; height:4px; border-radius:50%; background: var(--seal); margin-top:1px;
+  }
+  .nav-dot{ width:4px; height:4px; margin-top:1px; }
+
+  /* ================= GUIDE SUB-NAV ================= */
+  .subnav{
+    display:flex; gap:8px; overflow-x:auto; padding-bottom: 4px; margin-bottom: 22px;
+    -ms-overflow-style:none; scrollbar-width:none;
+  }
+  .subnav::-webkit-scrollbar{ display:none; }
+  .subnav-btn{
+    flex-shrink:0; font-size: 13px; font-weight:600; padding: 9px 16px;
+    border-radius: 20px; border: 1.5px solid var(--line); background: var(--paper);
+    color: var(--ink-soft); cursor:pointer; transition: all .15s ease; white-space:nowrap;
+  }
+  .subnav-btn:active{ transform: scale(0.96); }
+  .subnav-btn.active{ background: var(--indigo); border-color: var(--indigo); color: var(--white); }
+
+  /* ================= ITINERARY (timeline) ================= */
+  .day-block{ display:flex; gap:18px; margin-bottom: 6px; }
+  .day-rail{ display:flex; flex-direction:column; align-items:center; width: 56px; flex-shrink:0; }
+  .day-num{
+    width:40px; height:40px; border-radius:50%; background: var(--indigo); color: var(--paper);
+    font-family:'Noto Serif TC',serif; font-weight:700; font-size:14px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .day-line{ flex:1; width:1.5px; background: var(--line); margin-top:6px; }
+  .day-content{ flex:1; padding-bottom: 30px; }
+  .day-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .day-title-group{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .day-title{ font-size:18px; font-weight:700; font-family:'Noto Serif TC',serif; }
+  .day-date{ font-size:13px; color: var(--ink-faint); }
+  .event-list{ display:flex; flex-direction:column; gap:0; }
+  .event-row{ display:flex; gap: 12px; padding: 11px 0; border-top: 1px dotted var(--line-soft); align-items:flex-start; }
+  .event-row:first-child{ border-top:none; }
+  .event-cat{
+    flex-shrink:0; width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-size:16px; margin-top:1px;
+  }
+  .event-cat.cat-food{ background: rgba(178,58,46,0.1); }
+  .event-cat.cat-activity{ background: rgba(85,114,95,0.12); }
+  .event-cat.cat-shopping{ background: rgba(176,138,62,0.14); }
+  .event-cat.cat-sight{ background: rgba(44,67,86,0.1); }
+  .event-body{ flex:1; }
+  .event-cat-label{ font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; }
+  .cat-food .event-cat-label, .event-cat-label.food{ color: var(--seal); }
+  .event-activity{ font-size:14.5px; font-weight:500; color: var(--ink); margin-top:1px; }
+  .event-note{ font-size:12.5px; color: var(--ink-faint); margin-top:2px; }
+  .event-del{ background:none; border:none; color: var(--ink-faint); cursor:pointer; font-size:16px; padding:0 4px; line-height:1; align-self:flex-start; flex-shrink:0; }
+  .event-del:hover{ color: var(--seal); }
+  .add-event-row{ margin-top: 10px; }
+
+  .cat-tag-label{ font-size:11px; font-weight:700; padding:2px 0; }
+  .tag-食物{ color: var(--seal); }
+  .tag-活動{ color: var(--jade); }
+  .tag-購物{ color: var(--gold); }
+  .tag-景點{ color: var(--indigo); }
+
+  .map-link{
+    display:inline-flex; align-items:center; gap:4px; font-size: 12.5px; color: var(--indigo);
+    text-decoration:none; margin-top: 4px; font-weight:600; border-bottom: 1px dotted var(--indigo);
+  }
+  .map-link:hover{ color: var(--seal); border-bottom-color: var(--seal); }
+
+  /* ================= MAP TAB ================= */
+  .map-groups{ display:flex; flex-direction:column; gap:24px; }
+  .map-group h3{ font-size: 14px; font-weight:700; color: var(--indigo); margin: 0 0 10px; padding-bottom:6px; border-bottom: 1px solid var(--line-soft); }
+  .pin-card{ display:flex; align-items:center; gap:14px; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; background: var(--white); }
+  .pin-icon{ width: 36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size: 16px; background: var(--paper-deep); color: var(--indigo); }
+  .pin-body{ flex:1; min-width:0; }
+  .pin-title{ font-size:14.5px; font-weight:600; color: var(--ink); }
+  .pin-sub{ font-size:12.5px; color: var(--ink-faint); margin-top:2px; overflow-wrap:anywhere; }
+  .pin-btn{ flex-shrink:0; font-size:12.5px; font-weight:700; color: var(--white); background: var(--indigo); padding: 8px 14px; border-radius: 6px; text-decoration:none; white-space:nowrap; }
+  .pin-btn:hover{ opacity:0.85; }
+
+  /* ================= ACCOMMODATION ================= */
+  .stay-list{ display:flex; flex-direction:column; gap:16px; }
+  .stay-card{ border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(180deg, var(--white), var(--paper) 400%); padding: 18px 20px; position: relative; }
+  .stay-card::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background: var(--jade); border-radius: 10px 0 0 10px; }
+  .stay-top{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .stay-name{ font-family:'Noto Serif TC',serif; font-weight:700; font-size:17px; }
+  .stay-dates{ font-size:13px; color: var(--ink-soft); margin-top:4px; }
+  .stay-meta{ display:flex; flex-wrap:wrap; gap: 18px; margin-top: 12px; font-size:13px; color: var(--ink-soft); }
+  .stay-meta span b{ color: var(--ink); font-weight:600; }
+  .stay-note{ margin-top:10px; font-size:13px; color: var(--ink-faint); border-top:1px dotted var(--line-soft); padding-top:10px; }
+  .stay-actions{ display:flex; gap:8px; flex-shrink:0; }
+
+  /* ================= SHOPPING ================= */
+  .shop-groups{ display:flex; flex-direction:column; gap: 26px; }
+  .shop-group h3{ font-size: 14px; font-weight:700; color: var(--indigo); margin: 0 0 8px; padding-bottom:6px; border-bottom: 1px solid var(--line-soft); display:flex; justify-content:space-between; align-items:baseline; }
+  .shop-group h3 .g-count{ font-size:11.5px; color: var(--ink-faint); font-weight:500; }
+  .shop-row{ display:flex; align-items:center; gap:12px; padding: 9px 2px; border-bottom: 1px dotted var(--line-soft); }
+  .shop-row:last-child{ border-bottom:none; }
+  .shop-check{ width:19px; height:19px; border-radius:4px; border:1.5px solid var(--line); flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center; background: var(--white); color: var(--white); font-size:13px; font-weight:700; }
+  .shop-check.checked{ background: var(--jade); border-color: var(--jade); }
+  .shop-item-name{ flex:1; font-size:14.5px; }
+  .shop-row.done .shop-item-name{ text-decoration: line-through; color: var(--ink-faint); }
+  .shop-budget{ font-size:12.5px; color: var(--ink-faint); flex-shrink:0; }
+  .shop-del{ background:none; border:none; color: var(--ink-faint); cursor:pointer; font-size:16px; flex-shrink:0; }
+  .shop-del:hover{ color: var(--seal); }
+  .shop-thumb{ width: 34px; height:34px; border-radius:6px; object-fit:cover; border: 1px solid var(--line); flex-shrink:0; cursor: zoom-in; background: var(--paper); }
+
+  .image-field{ display:flex; align-items:center; gap:12px; }
+  .image-field input[type="file"]{ font-size: 12.5px; border: 1.5px dashed var(--line); background: var(--white); padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+  .image-preview-wrap{ position:relative; display:none; flex-shrink:0; }
+  .image-preview-wrap.show{ display:block; }
+  .image-preview{ width: 52px; height:52px; object-fit:cover; border-radius:8px; border: 1.5px solid var(--line); }
+  .image-preview-clear{ position:absolute; top:-7px; right:-7px; width:18px; height:18px; border-radius:50%; background: var(--seal); color:#fff; border:none; font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+  /* ================= CHECKLIST ================= */
+  .checklist-progress{ display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .checklist-bar{ flex:1; height:8px; border-radius:5px; background: var(--paper-deep); overflow:hidden; }
+  .checklist-bar-fill{ height:100%; background: var(--jade); border-radius:5px; transition: width .25s ease; }
+  .checklist-progress-label{ font-size:12.5px; color: var(--ink-soft); font-weight:600; flex-shrink:0; }
+  .check-row{ display:flex; align-items:center; gap:12px; padding: 10px 2px; border-bottom: 1px dotted var(--line-soft); }
+  .check-row:last-child{ border-bottom:none; }
+  .check-name{ flex:1; font-size:14.5px; }
+  .check-row.done .check-name{ text-decoration: line-through; color: var(--ink-faint); }
+
+  /* ================= SHARED ================= */
+  .expense-summary{ display:flex; gap: 14px; flex-wrap:wrap; margin-bottom: 22px; }
+  .expense-total-card{ flex:1; min-width: 160px; background: linear-gradient(155deg, var(--indigo), var(--indigo-deep)); color: var(--paper); border-radius: 12px; padding: 18px 20px; }
+  .expense-total-card .label{ font-size:12px; letter-spacing:0.06em; color:#C9D3D9; margin-bottom:6px; }
+  .expense-total-card .value{ font-family:'Noto Serif TC',serif; font-size:26px; font-weight:700; }
+  .expense-breakdown{ flex:2; min-width:220px; border: 1px solid var(--line); border-radius:12px; padding: 14px 18px; background: var(--paper); }
+  .expense-breakdown .bd-title{ font-size:12px; font-weight:700; color: var(--ink-soft); margin-bottom:8px; }
+  .bd-row{ display:flex; justify-content:space-between; font-size:13px; padding:4px 0; color: var(--ink); }
+  .bd-row .bd-cat{ color: var(--ink-soft); }
+  .expense-list{ display:flex; flex-direction:column; gap:0; }
+  .expense-row{ display:flex; align-items:center; gap:14px; padding: 11px 2px; border-bottom: 1px dotted var(--line-soft); }
+  .expense-row:last-child{ border-bottom:none; }
+  .expense-cat-tag{ font-size:11px; font-weight:700; padding:4px 10px; border-radius: 20px; background: var(--paper-deep); color: var(--ink-soft); flex-shrink:0; white-space:nowrap; }
+  .expense-pay-tag{ font-size:11px; font-weight:700; padding:4px 10px; border-radius: 20px; background: rgba(44,67,86,0.08); color: var(--indigo); flex-shrink:0; white-space:nowrap; }
+  .expense-date{ font-size:12px; color: var(--ink-faint); width:78px; flex-shrink:0; }
+  .expense-name{ flex:1; font-size:14px; min-width:80px; }
+  .expense-amount{ font-size:14.5px; font-weight:700; color: var(--ink); flex-shrink:0; }
+  .expense-del{ background:none; border:none; color: var(--ink-faint); cursor:pointer; font-size:16px; flex-shrink:0; }
+  .expense-del:hover{ color: var(--seal); }
+
+  .lightbox{ position: fixed; inset:0; background: rgba(27,41,56,0.82); display:none; align-items:center; justify-content:center; z-index: 60; padding: 30px; cursor: zoom-out; }
+  .lightbox.show{ display:flex; }
+  .lightbox img{ max-width: 90vw; max-height: 85vh; border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+  .toast{
+    position: fixed; bottom: calc(var(--navh) + 16px + env(safe-area-inset-bottom)); left:50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); font-size:13px; font-weight:500;
+    padding: 10px 18px; border-radius: 8px; opacity:0; pointer-events:none;
+    transition: opacity .25s ease, transform .25s ease; z-index: 50;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-inner">
+    <div class="cover-titles">
+      <div class="cover-eyebrow"><span class="rule"></span>TRAVEL JOURNAL</div>
+      <h1 class="trip-title" id="tripTitle" contenteditable="true" spellcheck="false">日本行程手帳</h1>
+      <div class="trip-dates" id="tripDates" contenteditable="true" spellcheck="false">點此輸入旅遊日期</div>
+    </div>
+    <div class="seal-stamp">旅<br>の<br>記</div>
+  </div>
+</div>
+
+<div class="page" id="page">
+  <div class="empty-state">頁面載入中…</div>
+</div>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-btn active" data-tab="itinerary">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18"/><path d="M8 3v4M16 3v4"/><path d="M7.5 13h2M11 13h2M14.5 13h2M7.5 16.5h2M11 16.5h2"/></svg>
+    <span class="nav-label">行程</span>
+    <span class="nav-dot"></span>
+  </button>
+  <button class="nav-btn" data-tab="map">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg>
+    <span class="nav-label">地圖</span>
+    <span class="nav-dot"></span>
+  </button>
+  <button class="nav-btn" data-tab="guide">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.2c1.6-.9 4.4-.9 6 0v13.6c-1.6-.9-4.4-.9-6 0V5.2z"/><path d="M20 5.2c-1.6-.9-4.4-.9-6 0v13.6c1.6-.9 4.4-.9 6 0V5.2z"/></svg>
+    <span class="nav-label">指南</span>
+    <span class="nav-dot"></span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const page = document.getElementById('page');
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 1800);
+  }
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  function openLightbox(src){ lightboxImg.src = src; lightbox.classList.add('show'); }
+  lightbox.addEventListener('click', ()=> lightbox.classList.remove('show'));
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function esc(s){
+    return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function mapUrl(query){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query); }
+
+  function readImageAsCompressedDataURL(file, maxDim, quality){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('讀取檔案失敗'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('圖片載入失敗'));
+        img.onload = () => {
+          let { width, height } = img;
+          if(width > height && width > maxDim){ height = Math.round(height * (maxDim / width)); width = maxDim; }
+          else if(height >= width && height > maxDim){ width = Math.round(width * (maxDim / height)); height = maxDim; }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ---------------- storage layer ----------------
+  const KEYS = {
+    meta: 'trip-meta',
+    itinerary: 'itinerary-days',
+    stay: 'accommodations',
+    shopping: 'shopping-items',
+    expenses: 'trip-expenses',
+    checklist: 'pretrip-checklist'
+  };
+
+  async function storeGet(key, fallback){
+    try{
+      const res = await window.storage.get(key, false);
+      if(res && res.value != null) return JSON.parse(res.value);
+      return fallback;
+    }catch(e){ return fallback; }
+  }
+  async function storeSet(key, value){
+    try{ await window.storage.set(key, JSON.stringify(value), false); }
+    catch(e){ console.error('storage set failed', key, e); toast('儲存失敗，請稍後再試'); }
+  }
+
+  const DEFAULT_CHECKLIST = ['護照', '簽證 / ESTA（如適用）', '機票、訂房電子憑證', 'Wi-Fi 或 SIM／eSIM', '旅遊保險', '日幣現金', '信用卡', '轉接插頭、充電器', '行動電源', '常備藥品', '雨具 / 折傘', '換洗衣物'];
+
+  // ---------------- app state ----------------
+  let state = {
+    meta: { title: '日本行程手帳', dates: '點此輸入旅遊日期' },
+    itinerary: [],   // [{id,title,date,events:[{id,category,activity,location,note}]}]
+    stay: [],        // [{id,name,checkin,checkout,address,price,confirm,note}]
+    shopping: [],    // [{id,name,category,budget,image,done}]
+    expenses: [],    // [{id,date,category,name,amount,currency,payment}]
+    checklist: []    // [{id,name,done}]
+  };
+
+  let activeTab = 'itinerary';
+  let activeGuideTab = 'stay';
+
+  async function loadAll(){
+    const [meta, itinerary, stay, shopping, expenses, checklist] = await Promise.all([
+      storeGet(KEYS.meta, state.meta),
+      storeGet(KEYS.itinerary, []),
+      storeGet(KEYS.stay, []),
+      storeGet(KEYS.shopping, []),
+      storeGet(KEYS.expenses, []),
+      storeGet(KEYS.checklist, null)
+    ]);
+    state.meta = meta || state.meta;
+    state.itinerary = itinerary || [];
+    state.stay = stay || [];
+    state.shopping = shopping || [];
+    state.expenses = expenses || [];
+    if(checklist === null){
+      state.checklist = DEFAULT_CHECKLIST.map(name => ({ id: uid(), name, done:false }));
+      await storeSet(KEYS.checklist, state.checklist);
+    }else{
+      state.checklist = checklist;
+    }
+  }
+
+  function countPins(){
+    let n = 0;
+    state.itinerary.forEach(d => (d.events||[]).forEach(e => { if(e.location) n++; }));
+    state.stay.forEach(s => { if(s.address) n++; });
+    return n;
+  }
+
+  function updateNavBadges(){
+    // (kept minimal — native nav bars typically stay clean; counts omitted intentionally)
+  }
+
+  // ---------------- bottom nav ----------------
+  document.getElementById('bottomNav').addEventListener('click', (e)=>{
+    const btn = e.target.closest('.nav-btn');
+    if(!btn) return;
+    activeTab = btn.dataset.tab;
+    document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b===btn));
+    render();
+  });
+
+  // ---------------- trip title / dates editing ----------------
+  const tripTitleEl = document.getElementById('tripTitle');
+  const tripDatesEl = document.getElementById('tripDates');
+  tripTitleEl.addEventListener('blur', async ()=>{
+    state.meta.title = tripTitleEl.textContent.trim() || '日本行程手帳';
+    await storeSet(KEYS.meta, state.meta);
+  });
+  tripDatesEl.addEventListener('blur', async ()=>{
+    state.meta.dates = tripDatesEl.textContent.trim() || '點此輸入旅遊日期';
+    await storeSet(KEYS.meta, state.meta);
+  });
+  tripTitleEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); tripTitleEl.blur(); } });
+  tripDatesEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); tripDatesEl.blur(); } });
+
+  // ================= RENDER ROUTER =================
+  function render(){
+    if(activeTab==='itinerary') renderItinerary();
+    else if(activeTab==='map') renderMap();
+    else if(activeTab==='guide') renderGuide();
+    page.classList.remove('page-fade');
+    requestAnimationFrame(()=> page.classList.add('page-fade'));
+  }
+
+  // ================= ITINERARY =================
+  const CATS = {
+    '食物': { icon:'🍜', cls:'cat-food' },
+    '活動': { icon:'🎯', cls:'cat-activity' },
+    '購物': { icon:'🛍️', cls:'cat-shopping' },
+    '景點': { icon:'⛩️', cls:'cat-sight' }
+  };
+
+  function renderItinerary(){
+    const days = state.itinerary;
+    let html = `
+      <div class="section-head">
+        <h2>行程規劃</h2>
+        <span class="hint">按天安排景點與活動</span>
+      </div>
+    `;
+
+    if(days.length===0){
+      html += `<div class="empty-state"><strong>還沒有任何行程</strong>新增第一天，開始規劃你的日本之旅</div>`;
+    }else{
+      days.forEach((day, idx)=>{
+        html += `
+        <div class="day-block" data-day="${day.id}">
+          <div class="day-rail">
+            <div class="day-num">${idx+1}</div>
+            ${idx < days.length-1 ? '<div class="day-line"></div>' : ''}
+          </div>
+          <div class="day-content">
+            <div class="day-header">
+              <div class="day-title-group">
+                <span class="day-title">${esc(day.title || ('Day ' + (idx+1)))}</span>
+                <span class="day-date">${esc(day.date || '')}</span>
+              </div>
+              <button class="btn ghost small" data-act="del-day" data-day="${day.id}">刪除此天</button>
+            </div>
+            <div class="event-list">
+              ${
+                (day.events||[]).length===0
+                ? '<div style="font-size:13px;color:var(--ink-faint);padding:8px 0;">尚無安排的活動</div>'
+                : day.events.map(ev => {
+                  const cat = CATS[ev.category] || CATS['景點'];
+                  return `
+                  <div class="event-row">
+                    <div class="event-cat ${cat.cls}">${cat.icon}</div>
+                    <div class="event-body">
+                      <div class="cat-tag-label tag-${esc(ev.category||'景點')}">${ev.time ? esc(ev.time) + ' · ' : ''}${esc(ev.category||'景點')}</div>
+                      <div class="event-activity">${esc(ev.activity)}</div>
+                      ${ev.note ? `<div class="event-note">${esc(ev.note)}</div>` : ''}
+                      ${ev.location ? `<a class="map-link" href="${mapUrl(ev.location)}" target="_blank" rel="noopener">📍 ${esc(ev.location)}</a>` : ''}
+                    </div>
+                    <button class="event-del" title="刪除" data-act="del-event" data-day="${day.id}" data-event="${ev.id}">×</button>
+                  </div>
+                `;}).join('')
+              }
+            </div>
+            <div class="add-event-row">
+              <button class="btn ghost small" data-act="show-event-form" data-day="${day.id}">+ 新增活動</button>
+              <div class="form-card" style="display:none; margin-top:10px;" data-event-form="${day.id}">
+                <div class="form-grid">
+                  <div class="field">
+                    <label>時間（選填）</label>
+                    <input type="time" data-f="time">
+                  </div>
+                  <div class="field">
+                    <label>景點分類</label>
+                    <select data-f="category">
+                      ${Object.keys(CATS).map(c=>`<option value="${c}">${CATS[c].icon} ${c}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="field wide">
+                    <label>活動內容</label>
+                    <input type="text" data-f="activity" placeholder="例如：伏見稻荷大社">
+                  </div>
+                  <div class="field wide">
+                    <label>地點（選填）</label>
+                    <input type="text" data-f="location" placeholder="地址或地標名稱，供地圖導航使用">
+                  </div>
+                  <div class="field wide">
+                    <label>備註</label>
+                    <input type="text" data-f="note" placeholder="交通方式、注意事項…（選填）">
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn ghost small" data-act="cancel-event-form" data-day="${day.id}">取消</button>
+                  <button class="btn small" data-act="save-event" data-day="${day.id}">儲存活動</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      });
+    }
+
+    html += `
+      <div class="form-card" style="margin-top:10px;">
+        <div class="form-grid">
+          <div class="field">
+            <label>日期</label>
+            <input type="date" id="new-day-date">
+          </div>
+          <div class="field wide">
+            <label>當日主題 / 城市</label>
+            <input type="text" id="new-day-title" placeholder="例如：京都 — 清水寺周邊">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="add-day-btn">+ 新增一天</button>
+        </div>
+      </div>
+    `;
+
+    page.innerHTML = html;
+
+    document.getElementById('add-day-btn').addEventListener('click', async ()=>{
+      const dateVal = document.getElementById('new-day-date').value;
+      const titleVal = document.getElementById('new-day-title').value.trim();
+      state.itinerary.push({ id: uid(), title: titleVal, date: dateVal, events: [] });
+      await storeSet(KEYS.itinerary, state.itinerary);
+      toast('已新增一天行程');
+      renderItinerary();
+    });
+
+    page.querySelectorAll('[data-act="del-day"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        state.itinerary = state.itinerary.filter(d=>d.id!==b.dataset.day);
+        await storeSet(KEYS.itinerary, state.itinerary);
+        renderItinerary();
+      });
+    });
+
+    page.querySelectorAll('[data-act="del-event"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        const day = state.itinerary.find(d=>d.id===b.dataset.day);
+        if(!day) return;
+        day.events = day.events.filter(ev=>ev.id!==b.dataset.event);
+        await storeSet(KEYS.itinerary, state.itinerary);
+        renderItinerary();
+      });
+    });
+
+    page.querySelectorAll('[data-act="show-event-form"]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const form = page.querySelector(`[data-event-form="${b.dataset.day}"]`);
+        form.style.display = form.style.display==='none' ? 'block' : 'none';
+      });
+    });
+    page.querySelectorAll('[data-act="cancel-event-form"]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        page.querySelector(`[data-event-form="${b.dataset.day}"]`).style.display = 'none';
+      });
+    });
+    page.querySelectorAll('[data-act="save-event"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        const dayId = b.dataset.day;
+        const form = page.querySelector(`[data-event-form="${dayId}"]`);
+        const time = form.querySelector('[data-f="time"]').value;
+        const category = form.querySelector('[data-f="category"]').value;
+        const activity = form.querySelector('[data-f="activity"]').value.trim();
+        const location = form.querySelector('[data-f="location"]').value.trim();
+        const note = form.querySelector('[data-f="note"]').value.trim();
+        if(!activity){ toast('請輸入活動內容'); return; }
+        const day = state.itinerary.find(d=>d.id===dayId);
+        day.events = day.events || [];
+        day.events.push({ id: uid(), time, category, activity, location, note });
+        day.events.sort((a,b2)=> (a.time||'99:99').localeCompare(b2.time||'99:99'));
+        await storeSet(KEYS.itinerary, state.itinerary);
+        toast('已新增活動');
+        renderItinerary();
+      });
+    });
+  }
+
+  // ================= MAP =================
+  function renderMap(){
+    let html = `
+      <div class="section-head">
+        <h2>地圖總覽</h2>
+        <span class="hint">彙整行程與住宿的地點，點擊在 Google 地圖開啟</span>
+      </div>
+    `;
+
+    const itineraryPins = [];
+    state.itinerary.forEach((day, idx) => {
+      (day.events||[]).forEach(ev => {
+        if(ev.location){
+          itineraryPins.push({ title: ev.activity, sub: (day.title || ('Day '+(idx+1))) + (ev.time ? ' · ' + ev.time : '') + ' · ' + (ev.category||''), query: ev.location });
+        }
+      });
+    });
+    const stayPins = state.stay.filter(s=>s.address).map(s=>({ title: s.name, sub: s.address, query: s.address }));
+    const totalPins = itineraryPins.length + stayPins.length;
+
+    if(totalPins===0){
+      html += `<div class="empty-state"><strong>還沒有可顯示的地點</strong>在「行程」「指南」中填寫地點或地址後，會自動出現在這裡</div>`;
+    }else{
+      html += `<div class="map-groups">`;
+      function group(title, icon, pins){
+        if(pins.length===0) return '';
+        return `
+        <div class="map-group">
+          <h3>${esc(title)}（${pins.length}）</h3>
+          ${pins.map(p => `
+            <div class="pin-card">
+              <div class="pin-icon">${icon}</div>
+              <div class="pin-body">
+                <div class="pin-title">${esc(p.title)}</div>
+                <div class="pin-sub">${esc(p.sub)}</div>
+              </div>
+              <a class="pin-btn" href="${mapUrl(p.query)}" target="_blank" rel="noopener">開啟地圖</a>
+            </div>
+          `).join('')}
+        </div>`;
+      }
+      html += group('行程景點', '🚩', itineraryPins);
+      html += group('住宿地點', '🏨', stayPins);
+      html += `</div>`;
+    }
+
+    page.innerHTML = html;
+  }
+
+  // ================= GUIDE (住宿 / 購物清單 / 行前清單 / 記帳) =================
+  const GUIDE_TABS = [
+    { key:'stay', label:'住宿' },
+    { key:'shopping', label:'購物清單' },
+    { key:'checklist', label:'行前清單' },
+    { key:'expenses', label:'記帳' }
+  ];
+
+  function renderGuide(){
+    let html = `
+      <div class="section-head">
+        <h2>旅遊指南</h2>
+        <span class="hint">住宿、購物與花費一次掌握</span>
+      </div>
+      <div class="subnav" id="guideSubnav">
+        ${GUIDE_TABS.map(t=>`<button class="subnav-btn ${t.key===activeGuideTab?'active':''}" data-gtab="${t.key}">${t.label}</button>`).join('')}
+      </div>
+      <div id="guideContent"></div>
+    `;
+    page.innerHTML = html;
+
+    page.querySelectorAll('[data-gtab]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        activeGuideTab = b.dataset.gtab;
+        page.querySelectorAll('[data-gtab]').forEach(x=> x.classList.toggle('active', x===b));
+        renderGuideContent();
+      });
+    });
+
+    renderGuideContent();
+  }
+
+  function renderGuideContent(){
+    const c = document.getElementById('guideContent');
+    if(!c) return;
+    if(activeGuideTab==='stay') renderStayInto(c);
+    else if(activeGuideTab==='shopping') renderShoppingInto(c);
+    else if(activeGuideTab==='checklist') renderChecklistInto(c);
+    else if(activeGuideTab==='expenses') renderExpensesInto(c);
+  }
+
+  // ---- 住宿 ----
+  function renderStayInto(container){
+    let html = '';
+    if(state.stay.length===0){
+      html += `<div class="empty-state"><strong>還沒有住宿紀錄</strong>新增你預訂的飯店或民宿</div>`;
+    }else{
+      html += `<div class="stay-list">`;
+      state.stay.forEach(s=>{
+        html += `
+        <div class="stay-card" data-id="${s.id}">
+          <div class="stay-top">
+            <div>
+              <div class="stay-name">${esc(s.name)}</div>
+              <div class="stay-dates">${esc(s.checkin||'—')} → ${esc(s.checkout||'—')}</div>
+            </div>
+            <div class="stay-actions">
+              <button class="btn ghost small" data-act="del-stay" data-id="${s.id}">刪除</button>
+            </div>
+          </div>
+          <div class="stay-meta">
+            ${s.address ? `<span>地址　<b>${esc(s.address)}</b></span>` : ''}
+            ${s.price ? `<span>價格　<b>${esc(s.price)}</b></span>` : ''}
+            ${s.confirm ? `<span>訂房編號　<b>${esc(s.confirm)}</b></span>` : ''}
+          </div>
+          ${s.address ? `<a class="map-link" href="${mapUrl(s.address)}" target="_blank" rel="noopener">📍 在地圖開啟</a>` : ''}
+          ${s.note ? `<div class="stay-note">${esc(s.note)}</div>` : ''}
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `
+      <div class="form-card" style="margin-top:22px;">
+        <div class="form-grid">
+          <div class="field wide"><label>飯店 / 民宿名稱</label><input type="text" id="s-name" placeholder="例如：京都格拉斯麗飯店"></div>
+          <div class="field"><label>入住日期</label><input type="date" id="s-checkin"></div>
+          <div class="field"><label>退房日期</label><input type="date" id="s-checkout"></div>
+          <div class="field"><label>價格</label><input type="text" id="s-price" placeholder="例如：NT$4,200 / 晚"></div>
+          <div class="field"><label>訂房編號</label><input type="text" id="s-confirm" placeholder="訂房確認碼（選填）"></div>
+          <div class="field wide"><label>地址</label><input type="text" id="s-address" placeholder="飯店地址（選填）"></div>
+          <div class="field wide"><label>備註</label><input type="text" id="s-note" placeholder="早餐、交通、備註…（選填）"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="add-stay-btn">+ 新增住宿</button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('[data-act="del-stay"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        state.stay = state.stay.filter(s=>s.id!==b.dataset.id);
+        await storeSet(KEYS.stay, state.stay);
+        renderStayInto(container);
+      });
+    });
+
+    document.getElementById('add-stay-btn').addEventListener('click', async ()=>{
+      const name = document.getElementById('s-name').value.trim();
+      if(!name){ toast('請輸入飯店名稱'); return; }
+      const item = {
+        id: uid(), name,
+        checkin: document.getElementById('s-checkin').value,
+        checkout: document.getElementById('s-checkout').value,
+        price: document.getElementById('s-price').value.trim(),
+        confirm: document.getElementById('s-confirm').value.trim(),
+        address: document.getElementById('s-address').value.trim(),
+        note: document.getElementById('s-note').value.trim()
+      };
+      state.stay.push(item);
+      await storeSet(KEYS.stay, state.stay);
+      toast('已新增住宿');
+      renderStayInto(container);
+    });
+  }
+
+  // ---- 購物清單 ----
+  const DEFAULT_SHOP_CATS = ['藥妝 / 保養', '零食 / 伴手禮', '服飾 / 配件', '3C / 家電', '其他'];
+
+  function renderShoppingInto(container){
+    let html = '';
+    if(state.shopping.length===0){
+      html += `<div class="empty-state"><strong>清單還是空的</strong>新增你想在日本購買的東西</div>`;
+    }else{
+      const groups = {};
+      state.shopping.forEach(item=>{
+        const cat = item.category || '其他';
+        groups[cat] = groups[cat] || [];
+        groups[cat].push(item);
+      });
+      html += `<div class="shop-groups">`;
+      Object.keys(groups).forEach(cat=>{
+        const items = groups[cat];
+        const doneCount = items.filter(i=>i.done).length;
+        html += `
+        <div class="shop-group">
+          <h3>${esc(cat)} <span class="g-count">${doneCount}/${items.length}</span></h3>
+          ${items.map(i=>`
+            <div class="shop-row ${i.done?'done':''}" data-id="${i.id}">
+              <button class="shop-check ${i.done?'checked':''}" data-act="toggle-shop" data-id="${i.id}">${i.done?'✓':''}</button>
+              ${i.image ? `<img class="shop-thumb" src="${i.image}" data-act="view-shop-image" data-id="${i.id}" alt="${esc(i.name)}">` : ''}
+              <div class="shop-item-name">${esc(i.name)}</div>
+              ${i.budget ? `<div class="shop-budget">${esc(i.budget)}</div>` : ''}
+              <button class="shop-del" data-act="del-shop" data-id="${i.id}" title="刪除">×</button>
+            </div>
+          `).join('')}
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `
+      <div class="form-card" style="margin-top:22px;">
+        <div class="form-grid">
+          <div class="field wide"><label>品項</label><input type="text" id="sh-name" placeholder="例如：白色戀人巧克力"></div>
+          <div class="field">
+            <label>分類</label>
+            <select id="sh-cat" class="cat-select">
+              ${DEFAULT_SHOP_CATS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>預算</label><input type="text" id="sh-budget" placeholder="例如：NT$300"></div>
+          <div class="field wide">
+            <label>參考圖片（選填）</label>
+            <div class="image-field">
+              <input type="file" id="sh-image" accept="image/*">
+              <div class="image-preview-wrap" id="sh-image-preview-wrap">
+                <img class="image-preview" id="sh-image-preview" src="" alt="預覽">
+                <button type="button" class="image-preview-clear" id="sh-image-clear" title="移除圖片">×</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="add-shop-btn">+ 新增品項</button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+
+    let pendingImage = null;
+    const imgInput = document.getElementById('sh-image');
+    const previewWrap = document.getElementById('sh-image-preview-wrap');
+    const previewImg = document.getElementById('sh-image-preview');
+
+    imgInput.addEventListener('change', async ()=>{
+      const file = imgInput.files && imgInput.files[0];
+      if(!file) return;
+      if(!file.type.startsWith('image/')){ toast('請選擇圖片檔案'); imgInput.value=''; return; }
+      try{
+        toast('圖片處理中…');
+        pendingImage = await readImageAsCompressedDataURL(file, 500, 0.72);
+        previewImg.src = pendingImage;
+        previewWrap.classList.add('show');
+      }catch(err){ toast('圖片讀取失敗，請換一張試試'); pendingImage = null; }
+    });
+    document.getElementById('sh-image-clear').addEventListener('click', ()=>{
+      pendingImage = null; imgInput.value = ''; previewWrap.classList.remove('show');
+    });
+
+    container.querySelectorAll('[data-act="view-shop-image"]').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const item = state.shopping.find(i=>i.id===el.dataset.id);
+        if(item && item.image) openLightbox(item.image);
+      });
+    });
+    container.querySelectorAll('[data-act="toggle-shop"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        const item = state.shopping.find(i=>i.id===b.dataset.id);
+        item.done = !item.done;
+        await storeSet(KEYS.shopping, state.shopping);
+        renderShoppingInto(container);
+      });
+    });
+    container.querySelectorAll('[data-act="del-shop"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        state.shopping = state.shopping.filter(i=>i.id!==b.dataset.id);
+        await storeSet(KEYS.shopping, state.shopping);
+        renderShoppingInto(container);
+      });
+    });
+
+    document.getElementById('add-shop-btn').addEventListener('click', async ()=>{
+      const name = document.getElementById('sh-name').value.trim();
+      if(!name){ toast('請輸入品項名稱'); return; }
+      const item = {
+        id: uid(), name,
+        category: document.getElementById('sh-cat').value,
+        budget: document.getElementById('sh-budget').value.trim(),
+        image: pendingImage || null,
+        done: false
+      };
+      state.shopping.push(item);
+      await storeSet(KEYS.shopping, state.shopping);
+      toast('已新增品項');
+      renderShoppingInto(container);
+    });
+  }
+
+  // ---- 行前確認清單 ----
+  function renderChecklistInto(container){
+    const total = state.checklist.length;
+    const doneCount = state.checklist.filter(i=>i.done).length;
+    const pct = total ? Math.round(doneCount/total*100) : 0;
+
+    let html = `
+      <div class="checklist-progress">
+        <div class="checklist-bar"><div class="checklist-bar-fill" style="width:${pct}%;"></div></div>
+        <div class="checklist-progress-label">${doneCount} / ${total}</div>
+      </div>
+    `;
+
+    if(total===0){
+      html += `<div class="empty-state"><strong>清單是空的</strong>新增你出發前要準備的物品</div>`;
+    }else{
+      state.checklist.forEach(i=>{
+        html += `
+        <div class="check-row ${i.done?'done':''}" data-id="${i.id}">
+          <button class="shop-check ${i.done?'checked':''}" data-act="toggle-check" data-id="${i.id}">${i.done?'✓':''}</button>
+          <div class="check-name">${esc(i.name)}</div>
+          <button class="shop-del" data-act="del-check" data-id="${i.id}" title="刪除">×</button>
+        </div>`;
+      });
+    }
+
+    html += `
+      <div class="form-card" style="margin-top:22px;">
+        <div class="form-grid">
+          <div class="field wide"><label>新增項目</label><input type="text" id="ck-name" placeholder="例如：兒童常備藥"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="add-check-btn">+ 新增項目</button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('[data-act="toggle-check"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        const item = state.checklist.find(i=>i.id===b.dataset.id);
+        item.done = !item.done;
+        await storeSet(KEYS.checklist, state.checklist);
+        renderChecklistInto(container);
+      });
+    });
+    container.querySelectorAll('[data-act="del-check"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        state.checklist = state.checklist.filter(i=>i.id!==b.dataset.id);
+        await storeSet(KEYS.checklist, state.checklist);
+        renderChecklistInto(container);
+      });
+    });
+    document.getElementById('add-check-btn').addEventListener('click', async ()=>{
+      const name = document.getElementById('ck-name').value.trim();
+      if(!name){ toast('請輸入項目名稱'); return; }
+      state.checklist.push({ id: uid(), name, done:false });
+      await storeSet(KEYS.checklist, state.checklist);
+      toast('已新增項目');
+      renderChecklistInto(container);
+    });
+  }
+
+  // ---- 記帳 ----
+  const EXPENSE_CATS = ['餐飲', '交通', '購物', '門票', '住宿', '其他'];
+  const CURRENCIES = ['JPY', 'TWD'];
+  const PAYMENT_METHODS = ['現金', '信用卡'];
+
+  function renderExpensesInto(container){
+    let html = '';
+    const totalsByCurrency = {};
+    const totalsByCat = {};
+    state.expenses.forEach(e=>{
+      const amt = parseFloat(e.amount) || 0;
+      totalsByCurrency[e.currency] = (totalsByCurrency[e.currency]||0) + amt;
+      const key = e.category + '|' + e.currency;
+      totalsByCat[key] = (totalsByCat[key]||0) + amt;
+    });
+
+    html += `<div class="expense-summary">`;
+    const currencyKeys = Object.keys(totalsByCurrency);
+    if(currencyKeys.length===0){
+      html += `<div class="expense-total-card"><div class="label">總支出</div><div class="value">尚無紀錄</div></div>`;
+    }else{
+      currencyKeys.forEach(cur=>{
+        html += `<div class="expense-total-card"><div class="label">總支出（${esc(cur)}）</div><div class="value">${cur==='JPY'?'¥':'NT$'}${totalsByCurrency[cur].toLocaleString()}</div></div>`;
+      });
+    }
+    if(Object.keys(totalsByCat).length>0){
+      html += `<div class="expense-breakdown"><div class="bd-title">分類統計</div>`;
+      Object.keys(totalsByCat).sort().forEach(key=>{
+        const [cat, cur] = key.split('|');
+        html += `<div class="bd-row"><span class="bd-cat">${esc(cat)}（${esc(cur)}）</span><span>${cur==='JPY'?'¥':'NT$'}${totalsByCat[key].toLocaleString()}</span></div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+
+    if(state.expenses.length===0){
+      html += `<div class="empty-state"><strong>還沒有記帳紀錄</strong>新增第一筆花費，開始追蹤旅遊開銷</div>`;
+    }else{
+      const sorted = [...state.expenses].sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+      html += `<div class="expense-list">`;
+      sorted.forEach(e=>{
+        html += `
+        <div class="expense-row" data-id="${e.id}">
+          <div class="expense-date">${esc(e.date||'—')}</div>
+          <div class="expense-cat-tag">${esc(e.category)}</div>
+          ${e.payment ? `<div class="expense-pay-tag">${e.payment==='信用卡'?'💳':'💴'} ${esc(e.payment)}</div>` : ''}
+          <div class="expense-name">${esc(e.name)}</div>
+          <div class="expense-amount">${e.currency==='JPY'?'¥':'NT$'}${(parseFloat(e.amount)||0).toLocaleString()}</div>
+          <button class="expense-del" data-act="del-expense" data-id="${e.id}" title="刪除">×</button>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `
+      <div class="form-card" style="margin-top:22px;">
+        <div class="form-grid">
+          <div class="field wide"><label>項目說明</label><input type="text" id="ex-name" placeholder="例如：一蘭拉麵晚餐"></div>
+          <div class="field"><label>日期（選填）</label><input type="date" id="ex-date"></div>
+          <div class="field">
+            <label>分類</label>
+            <select id="ex-cat">${EXPENSE_CATS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label>金額</label><input type="number" id="ex-amount" placeholder="0" min="0" step="1"></div>
+          <div class="field">
+            <label>幣別</label>
+            <select id="ex-currency">${CURRENCIES.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+          </div>
+          <div class="field">
+            <label>付款方式</label>
+            <select id="ex-payment">${PAYMENT_METHODS.map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="add-expense-btn">+ 新增紀錄</button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('[data-act="del-expense"]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        state.expenses = state.expenses.filter(e=>e.id!==b.dataset.id);
+        await storeSet(KEYS.expenses, state.expenses);
+        renderExpensesInto(container);
+      });
+    });
+    document.getElementById('add-expense-btn').addEventListener('click', async ()=>{
+      const name = document.getElementById('ex-name').value.trim();
+      const amount = document.getElementById('ex-amount').value;
+      if(!name){ toast('請輸入項目說明'); return; }
+      if(amount==='' || isNaN(parseFloat(amount))){ toast('請輸入金額'); return; }
+      const item = {
+        id: uid(), name,
+        date: document.getElementById('ex-date').value,
+        category: document.getElementById('ex-cat').value,
+        amount: parseFloat(amount),
+        currency: document.getElementById('ex-currency').value,
+        payment: document.getElementById('ex-payment').value
+      };
+      state.expenses.push(item);
+      await storeSet(KEYS.expenses, state.expenses);
+      toast('已新增記帳');
+      renderExpensesInto(container);
+    });
+  }
+
+  // ---------------- init ----------------
+  (async function init(){
+    await loadAll();
+    tripTitleEl.textContent = state.meta.title;
+    tripDatesEl.textContent = state.meta.dates;
+    render();
+  })();
+
+})();
+</script>
+</body>
+</html>
